@@ -50,6 +50,18 @@ export class CartService {
 
   computeCartTotals() {
     
+    let totalPriceValue: number = 0;
+    let totalQuantityValue: number = 0;
+
+    for(let currentCarItem of this.cartItems) {
+      totalPriceValue += currentCarItem.quantity * currentCarItem.unitPrice;
+      totalQuantityValue += currentCarItem.quantity;
+    }
+
+    // publish the new values... all subscribers will receive the new data
+    this.totalPrice.next(totalQuantityValue);
+    this.totalQuantity.next(totalQuantityValue);
+
   }
 
 }
