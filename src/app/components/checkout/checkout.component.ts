@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Country } from 'src/app/common/country';
 import { State } from 'src/app/common/state';
+import { CartService } from 'src/app/services/cart.service';
 import { ECommerceShopFormService } from 'src/app/services/e-commerce-shop-form.service';
 import { ECommerceValidators } from 'src/app/validators/e-commerce-validators';
 
@@ -13,6 +14,7 @@ import { ECommerceValidators } from 'src/app/validators/e-commerce-validators';
 export class CheckoutComponent implements OnInit {
 
   checkoutFormGroup: FormGroup;
+  
   totalPrice: number = 0;
   totalQuantity: number = 0;
 
@@ -24,9 +26,12 @@ export class CheckoutComponent implements OnInit {
   billingAddressStates: State[] = [];
   
   constructor(private formBuilder: FormBuilder,
-              private eCommerceShopFormService: ECommerceShopFormService) { }
+              private eCommerceShopFormService: ECommerceShopFormService,
+              private cartService: CartService) { }
 
   ngOnInit(): void {
+
+    this.reviewCartDetails();
 
     this.checkoutFormGroup = this.formBuilder.group({
       customer: this.formBuilder.group({
@@ -111,6 +116,20 @@ export class CheckoutComponent implements OnInit {
         this.countries = data;
       }
     );
+  }
+
+  reviewCartDetails() {
+    
+    // subscribe to cartService.totalQuantity
+    this.cartService.totalQuantity.subscribe(
+      totalQuantity => this.totalQuantity = totalQuantity
+    );
+
+    // subscribe to cartService.totalPrice
+    this.cartService.totalPrice.subscribe(
+      totalPrice => this.totalPrice = totalPrice
+    );
+    
   }
 
   onSubmit(){
